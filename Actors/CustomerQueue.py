@@ -3,39 +3,28 @@ __author__ = 'jatin'
 import Queue
 import Customer
 
+
 class CustomerQueue:
 
 
     def __init__(self):
         self.q = Queue.Queue()
 
-    def addCustomer(self, customer):
+    def add_customer(self, customer):
         self.q.put(customer)
 
-    def getCustomer(self):
-        cust = Customer.Customer()
-        cust = self.q.get()
-        return cust
-
-
+    def get_customer(self):
+        customer = self.q.get()
+        return customer
 
 
 def main():
     print("hello")
     q = CustomerQueue()
-    cust = Customer.Customer()
-    q.addCustomer(cust)
-    cust =  q.getCustomer()
-    print(cust)
-
-
-
-
-
-
-
-
-
+    customer = Customer.Customer()
+    q.add_customer(customer)
+    customer = q.get_customer()
+    print(customer.cashOnHand)
 
 
 if __name__ == '__main__':
