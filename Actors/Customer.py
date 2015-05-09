@@ -34,3 +34,18 @@ class Customer:
 
         self.cashOnHand = randint(0, MAX_CASH_IN_HAND)
         self.generate_items()
+
+    def is_adult(self):
+        return self.isAdult
+
+    def has_age_proof(self):
+        return self.hasAgeProof
+
+    def has_debit_or_credit_card(self):
+        return self.hasDebitOrCreditCard
+
+    def get_cash_on_hand(self):
+        return self.cashOnHand
+
+    def get_items(self):
+        return self.items

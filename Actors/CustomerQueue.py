@@ -18,12 +18,11 @@ class CustomerQueue:
 
 
 def main():
-    print("hello")
     q = CustomerQueue()
     customer = Customer.Customer()
     q.add_customer(customer)
     customer = q.get_customer()
-    print(customer.cashOnHand)
+    print(customer.get_cash_on_hand())
 
 
 if __name__ == '__main__':

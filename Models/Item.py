@@ -17,3 +17,12 @@ class Item:
 
         if randint(0, 100) < ITEM_ALCOHOL_PROBABILITY:
             self.isAlcoholic = True
+
+    def get_name(self):
+        return self.name
+
+    def get_value(self):
+        return self.value
+
+    def is_alcoholic(self):
+        return self.isAlcoholic
