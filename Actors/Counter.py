@@ -1,18 +1,21 @@
 __author__ = 'priya'
+import state
+import Attendant
+
 
 class Counter:
-    def __init__(self, Attendant, State):
-        self.Attendant = Attendant
-        self.State = State
+    def __init__(self, attendant, state):
+        self.Attendant = attendant
+        self.State = state
 
-    def hasAttendant(self):
+    def has_attendant(self):
         if self.Attendant is None:
             return False
         else:
             return True
 
-    def addAttendant(self, Attendant):
-        self.Attendant = Attendant
+    def add_attendant(self, attendant):
+        self.Attendant = attendant
 
-    def removeAttendant(self):
+    def remove_attendant(self):
         self.Attendant = None
