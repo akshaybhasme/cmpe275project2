@@ -1,7 +1,9 @@
 __author__ = 'Siddharth'
 
+
 class State:
-    def On(self):
+    def on(self):
         assert 0, "on state"
-    def Off(self):
+
+    def off(self):
         assert 0, "off state"
