@@ -20,7 +20,7 @@ class Customer:
 
     def generate_items(self):
         for x in range(0, MAX_ITEMS):
-            item = Item()
+            item = Item.Item()
             self.items.append(item)
 
     def generate_customer(self):
