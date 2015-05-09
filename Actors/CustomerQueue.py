@@ -6,7 +6,6 @@ import Customer
 
 class CustomerQueue:
 
-
     def __init__(self):
         self.q = Queue.Queue()
 
