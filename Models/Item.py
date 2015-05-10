@@ -1,3 +1,5 @@
+__author__ = 'apurvapawar'
+
 from random import randint
 
 MAX_ITEM_VALUE = 50
