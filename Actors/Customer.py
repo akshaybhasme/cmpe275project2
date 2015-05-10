@@ -21,7 +21,7 @@ class Customer:
         self.generate_customer()
 
     def generate_items(self):
-        total = randint(0, MAX_ITEMS)
+        total = randint(1, MAX_ITEMS)
         for x in range(0, total):
             item = Item.Item()
             self.items.append(item)
