@@ -22,7 +22,12 @@ def main():
     customer = Customer.Customer()
     q.add_customer(customer)
     customer = q.get_customer()
-    print(customer.get_cash_on_hand())
+    items = customer.get_items()
+    print len(items)
+    for item in items:
+        print("Name: " + item.get_name() +
+              " Value: $" + str(item.get_value()) +
+              " isAlcoholic?: " + str(item.is_alcoholic()))
 
 
 if __name__ == '__main__':
