@@ -13,15 +13,22 @@ class CustomerQueueServer(protocol.Protocol):
         self.q = CustomerQueue()
 
     def dataReceived(self, data):
-        message = json.loads(data)
+        try:
+            message = json.loads(data)
 
-        if message['type'] == 'addcustomer':
-            customer = Customer()
-            self.q.add_customer(customer)
+            if message['type'] == 'addcustomer':
+                customer = Customer()
+                self.q.add_customer(customer)
 
-        elif message['type'] == 'nextcustomer':
-            msg = Message('customer', self.q.get_customer())
-            self.transport.write(json.dumps(msg, default=lambda o: o.__dict__))
+            elif message['type'] == 'nextcustomer':
+                msg = Message('customer', self.q.get_customer())
+                self.transport.write(json.dumps(msg, default=lambda o: o.__dict__))
+
+        except:
+            # print exception here if you want a debug statement
+            pass
+
+
 
 
 class CustomerQueueFactory(protocol.Factory):
