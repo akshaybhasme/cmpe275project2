@@ -53,17 +53,9 @@ class Customer:
     def get_items(self):
         return self.items
 
-
-class Customer(object):
-    def _init_(self, name, isAdult, hasAgeProof, hasDebitOrCreditCard, cashOnHand, item):
-        self.isAdult = isAdult
-        self.hasAgeProof = hasAgeProof
-        self.hasDebitOrCreditCard = hasDebitOrCreditCard
-        self.cashOnHand = cashOnHand
-        self.items = item
-
-import json
-
-
-def object_decoder(obj):
-    return Customer(obj['isAdult'], obj['hasAgeProof'], obj['hasDebitOrCreditCard'], obj['cashOnHand'], obj['items'])
+    def object_decoder(self, obj):
+        self.isAdult = obj['isAdult']
+        self.hasAgeProof = obj['hasAgeProof']
+        self.hasDebitOrCreditCard = obj['hasDebitOrCreditCard']
+        self.cashOnHand = obj['cashOnHand']
+        self.items = obj['items']
