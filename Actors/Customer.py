@@ -13,6 +13,7 @@ MAX_CASH_IN_HAND = 500
 
 class Customer:
     def __init__(self):
+        self.name = None
         self.isAdult = False
         self.hasAgeProof = False
         self.hasDebitOrCreditCard = False
@@ -52,3 +53,19 @@ class Customer:
 
     def get_items(self):
         return self.items
+
+
+class Customer(object):
+    def _init_(self, name, isAdult, hasAgeProof, hasDebitOrCreditCard, cashOnHand, item):
+        self.name = name
+        self.isAdult = isAdult
+        self.hasAgeProof = hasAgeProof
+        self.hasDebitOrCreditCard = hasDebitOrCreditCard
+        self.cashOnHand = cashOnHand
+        self.items = item
+
+import json
+
+
+def object_decoder(obj):
+    return Customer(obj['name'], obj['isAdult'], obj['hasAgeProof'], obj['hasDebitOrCreditCard'], obj['cashOnHand'], obj['items'])
