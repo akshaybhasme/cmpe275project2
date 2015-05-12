@@ -4,6 +4,7 @@ __author__ = 'sid'
 from Actors import Attendant
 import Message
 import json
+import time
 from twisted.internet import protocol, reactor, endpoints
 from twisted.protocols import basic
 from twisted.internet.protocol import ClientFactory
@@ -85,7 +86,7 @@ class AttendantServerProtocol(basic.LineReceiver):
 
     def connectionMade(self):
         print("connection made in attendant server")
-        self.sendLine("{\"type\":\"next_customer\"}")
+        #self.transport.write("{\"type\":\"next_customer\"}")
 
     def connectToOtherServer(self, line):
         #host, port = line.split()
@@ -102,8 +103,9 @@ class AttendantClientProtocol(basic.LineReceiver):
 
     def connectionMade(self):
         print("connection made in attendant client")
-
-        # self.sendLine("hello Priya")
+        time.sleep(5)
+        self.sendLine(("{\"msg_type\":\"next_customer\"}"))
+        #self.sendLine("hello Priya")
         # add delay
         # self.sendLine("{\"type\":\"give_items\"}")
         # print("request sent")
