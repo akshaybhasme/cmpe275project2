@@ -26,7 +26,7 @@ class CustomerQueueServer(protocol.Protocol):
                 print "Customer added"
 
             elif message['msg_type'] == 'nextcustomer':
-                print "Sending customer"
+                print "Sending customer!"
                 msg = Message('customer', self.customerQueueFactory.get_from_queue())
                 msg_json = json.dumps(msg, default=lambda o: o.__dict__)
                 print msg_json

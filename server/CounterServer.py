@@ -42,7 +42,7 @@ class CounterServerProtocol(basic.LineReceiver):
                 self.customer.object_decoder(message['payload'])
 
             elif message['msg_type'] == 'greeting':
-                msg = Message('greeting',"M great")
+                msg = Message('greeting',"M great!!")
 
             elif message['msg_type'] == 'next_customer':
                 # print "Got msg from attendant"

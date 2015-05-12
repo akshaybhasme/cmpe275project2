@@ -66,7 +66,7 @@ class AttendantServer(protocol.Protocol):
 
         except Exception as e:
             print e.message
-            self.transport.write("Buddy, you screwed up! in AttendantServer:(")
+            self.transport.write("Buddy!, you screwed up! in AttendantServer:(")
             pass
 
 
