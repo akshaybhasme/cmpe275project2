@@ -28,3 +28,8 @@ class Item:
 
     def is_alcoholic(self):
         return self.isAlcoholic
+
+    def decode_from_json(self, obj):
+        self.name = obj['name']
+        self.value = obj['value']
+        self.isAlcoholic = obj['isAlcoholic']

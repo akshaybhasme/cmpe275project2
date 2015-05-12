@@ -53,9 +53,27 @@ class Customer:
     def get_items(self):
         return self.items
 
+    def set_adult(self, is_adult):
+        self.isAdult = is_adult
+        
+    def set_has_age_proof(self, has_age_proof):
+        self.hasAgeProof = has_age_proof
+
+    def set_debit_or_credit(self, debit_or_credit_card):
+        self.hasDebitOrCreditCard = debit_or_credit_card
+
+    def set_cash_in_hand(self, cash_in_hand):
+        self.cashOnHand = cash_in_hand
+
+    def set_items(self, items):
+        self.items = items
+
     def object_decoder(self, obj):
         self.isAdult = obj['isAdult']
         self.hasAgeProof = obj['hasAgeProof']
         self.hasDebitOrCreditCard = obj['hasDebitOrCreditCard']
         self.cashOnHand = obj['cashOnHand']
-        self.items = obj['items']
+        for item_json in obj['items']:
+            item = Item()
+            item.decode_from_json(item_json)
+            self.items.append(item)
