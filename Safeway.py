@@ -2,9 +2,12 @@ __author__ = 'apurvapawar'
 
 import sys
 
+from client import QueueClient
+from server import AttendantServer
+from server import CounterServer
 
 def main():
-    options = {"shop": shop, "attendant": attendant, "counter": counter}
+    options = {"shop": shop, "attendant": attendant, "counter": counter, "generator": generator}
     if options.get(sys.argv[1]) is None:
         print "Invalid Arguments Entered."
         sys.exit(0)
@@ -30,11 +33,19 @@ def shop():
 def attendant():
     print "Starting Attendant..."
     # start attendant server
+    AttendantServer.main()
 
 
 def counter():
     print "Starting Counter..."
     # start counter server
+    CounterServer.main()
+
+
+def generator():
+    print "Starting Customer Generator..."
+    # start customer generator
+    QueueClient.task.react(QueueClient.main)
 
 
 def is_int_string(s):
