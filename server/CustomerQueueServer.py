@@ -46,16 +46,18 @@ class CustomerQueueFactory(protocol.Factory):
         self.q.add_customer(customer)
 
     def get_from_queue(self):
-        return self.q.get_customer()
+        cust = Customer()
+        return cust
+        #return self.q.get_customer()
 
     def buildProtocol(self, addr):
-        print "Got connection"
+        print "Got connection: " + str(addr)
         return CustomerQueueServer(self)
 
 
 def main():
     customerQueueFactory = CustomerQueueFactory()
-    endpoints.serverFromString(reactor, "tcp:1234").listen(customerQueueFactory)
+    endpoints.serverFromString(reactor, "tcp:1233").listen(customerQueueFactory)
     reactor.run()
 
 

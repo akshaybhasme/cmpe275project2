@@ -92,8 +92,9 @@ class AttendantServerProtocol(basic.LineReceiver):
         #host, port = line.split()
         #port = int(port)
         print "connect to other server"
-        host = "10.189.235.131"
-        port = 1234
+        #host = "10.189.235.131"
+        host = "localhost"
+        port = 1567
         factory = AttendantClientFactory()
         factory.protocol = AttendantClientProtocol
         reactor.connectTCP(host, port, factory)
@@ -133,7 +134,7 @@ def main():
     log.startLogging(sys.stdout)
     factory = AttendantServerFactory()
     factory.protocol = AttendantServerProtocol
-    reactor.listenTCP(1234, factory)
+    reactor.listenTCP(3030, factory)
     reactor.run()
 
 if __name__ == '__main__':
