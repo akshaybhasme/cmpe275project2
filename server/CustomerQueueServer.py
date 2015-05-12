@@ -9,7 +9,8 @@ from Message import Message
 
 class CustomerQueueServer(protocol.Protocol):
 
-    def __init__(self):
+    def __init__(self, cqFactory):
+        self.customerQueueFactory = cqFactory
         pass
 
     def dataReceived(self, data):
@@ -21,12 +22,12 @@ class CustomerQueueServer(protocol.Protocol):
                 print "Adding customer"
                 customer = Customer()
                 customer.object_decoder(message['payload'])
-                customerQueueFactory.add_to_queue(customer)
+                self.customerQueueFactory.add_to_queue(customer)
                 print "Customer added"
 
             elif message['msg_type'] == 'nextcustomer':
                 print "Sending customer"
-                msg = Message('customer', customerQueueFactory.get_from_queue())
+                msg = Message('customer', self.customerQueueFactory.get_from_queue())
                 msg_json = json.dumps(msg, default=lambda o: o.__dict__)
                 print msg_json
                 self.transport.write(msg_json)
@@ -49,13 +50,14 @@ class CustomerQueueFactory(protocol.Factory):
 
     def buildProtocol(self, addr):
         print "Got connection"
-        return CustomerQueueServer()
+        return CustomerQueueServer(self)
 
 
 def main():
     customerQueueFactory = CustomerQueueFactory()
     endpoints.serverFromString(reactor, "tcp:1234").listen(customerQueueFactory)
     reactor.run()
+
 
 if __name__ == '__main__':
     main()

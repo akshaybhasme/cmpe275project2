@@ -7,8 +7,9 @@ from server import AttendantServer
 from server import CounterServer
 from server import CustomerQueueServer
 
+
 def main():
-    options = {"shop": shop, "attendant": attendant, "counter": counter, "generator": generator}
+    options = {"queue": queue, "attendant": attendant, "counter": counter, "generator": generator}
     if options.get(sys.argv[1]) is None:
         print "Invalid Arguments Entered."
         sys.exit(0)
@@ -16,36 +17,37 @@ def main():
         options.get(sys.argv[1])()
 
 
-def shop():
-    if len(sys.argv) < 3:
-        print "Please enter number of counters as second argument for argument 'shop'"
-        sys.exit(0)
-
-    if not is_int_string(sys.argv[2]):
-        print "Second argument should be of type integer for argument 'shop'"
-        sys.exit(0)
-
-    number_of_counters = int(sys.argv[2])
-
-    print "Starting Shop with "+str(number_of_counters)+" Counters..."
+def queue():
+    # if len(sys.argv) < 3:
+    #     print "Please enter number of counters as second argument for argument 'shop'"
+    #     sys.exit(0)
+    #
+    # if not is_int_string(sys.argv[2]):
+    #     print "Second argument should be of type integer for argument 'shop'"
+    #     sys.exit(0)
+    #
+    # number_of_counters = int(sys.argv[2])
+    #
+    # print "Starting Shop with "+str(number_of_counters)+" Counters..."
     # start shop server with above number of counters
+    print "Starting Safeway Shop Queue..."
     CustomerQueueServer.main()
 
 
 def attendant():
-    print "Starting Attendant..."
+    print "Starting Safeway Attendant..."
     # start attendant server
     AttendantServer.main()
 
 
 def counter():
-    print "Starting Counter..."
+    print "Starting Safeway Counter..."
     # start counter server
     CounterServer.main()
 
 
 def generator():
-    print "Starting Customer Generator..."
+    print "Starting Safeway Customer Generator..."
     # start customer generator
     QueueClient.task.react(QueueClient.main)
 
