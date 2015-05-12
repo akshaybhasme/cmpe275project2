@@ -14,7 +14,7 @@ class QueueClient(LineReceiver):
     end = "Bye-bye!"
 
     def __init__(self):
-        pass
+        self.cg = ClientGenerator(self)
 
     def connectionMade(self):
         #print("connection made")
@@ -23,14 +23,13 @@ class QueueClient(LineReceiver):
         #print m
         #self.sendMsg(m)
         #print("customer sent")
-        self.cg = ClientGenerator(self)
         self.cg.takeUserInput()
 
     def sendMsg(self,msg):
-        print("send data to customer")
-        c = Customer();
-        message = Message('addcustomer', c)
-        self.sendLine(msg)
+        print("sending customer to queue")
+        m = msg.get_message_json()
+        print m
+        self.sendLine(m)
 
     def lineReceived(self, line):
         print("receive:", line)
@@ -100,7 +99,7 @@ class ClientGenerator:
                 if option == 4:
                     print("reached 4")
                     print(self.client_sender)
-                    self.client_sender
+                    self.client_sender.sendMsg(Message('addcustomer', Customer()))
 
                 if option == 5:
                     sys.exit()
@@ -111,7 +110,7 @@ class ClientGenerator:
 
 def main(reactor):
     factory = ClientFactory()
-    reactor.connectTCP('10.189.71.128', 1234, factory)
+    reactor.connectTCP('localhost', 1234, factory)
     return factory.done
 
 
