@@ -5,6 +5,7 @@ import sys
 from client import QueueClient
 from server import AttendantServer
 from server import CounterServer
+from server import CustomerQueueServer
 
 def main():
     options = {"shop": shop, "attendant": attendant, "counter": counter, "generator": generator}
@@ -28,6 +29,7 @@ def shop():
 
     print "Starting Shop with "+str(number_of_counters)+" Counters..."
     # start shop server with above number of counters
+    CustomerQueueServer.main()
 
 
 def attendant():

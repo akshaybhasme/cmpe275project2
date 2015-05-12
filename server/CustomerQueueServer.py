@@ -51,6 +51,11 @@ class CustomerQueueFactory(protocol.Factory):
         print "Got connection"
         return CustomerQueueServer()
 
-customerQueueFactory = CustomerQueueFactory()
-endpoints.serverFromString(reactor, "tcp:1234").listen(customerQueueFactory)
-reactor.run()
+
+def main():
+    customerQueueFactory = CustomerQueueFactory()
+    endpoints.serverFromString(reactor, "tcp:1234").listen(customerQueueFactory)
+    reactor.run()
+
+if __name__ == '__main__':
+    main()
