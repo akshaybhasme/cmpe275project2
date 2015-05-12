@@ -1,35 +1,43 @@
-__author__ = 'priya'
 import time
 from random import randint
-
+from Models import Item
 
 class Attendant:
-    def __init__(self, queue):
-        self.Queue = queue
-        self.Customer = self.Queue.get()
+    def __init__(self):
+        self.alcoholic = False
+        self.total = 0
+        self.alcohol_cost = 0
 
-    def process_item_list(self):
-        for item in self.Customer.items:
-            if item.isAlcoholic:
-                self.process_alcohol()
-            else:
-                self.process_nonalcohol(item)
+    def process_item_list(self, items):
+        # item needs to behave like Models.Item object. Will this work?
+        for item in items:
+            if item.is_alcoholic():
+                self.alcoholic = True
+                self.alcohol_cost = item.get_value()
+                print("Alcoholic item found. ID card is required to process item")
+                # The program needs to wait here to get the ID instead of processing the items, or does it?
+                # Maybe the attendant purposely keeps the liquor item for the end
+            self.total = self.total + item.get_value()
+        return self.alcoholic
 
-    def process_nonalcohol(self, item):
-        time.sleep(randint(3,5))
-        print("Processing item: ", item)
+    def remove_alcoholic(self):
+        self.total -= self.alcohol_cost
+        print("Alcoholic items worth ", self.alcohol_cost, " removed")
 
-    def payment(self):
-        if self.Customer.hasDebitOrCreditCard:
-            time.sleep(randint(3,5))
-            print("PAYMENT SUCCESS: Amount deducted from Card")
-        else:
-            time.sleep(randint(5,8))
+    def process_card(self):
+        print("PAYMENT SUCCESS: Amount deducted from Card :$", self.total)
+        return True
+
+    def process_cash(self, cash):
+        self.total -= cash
+        if self.total > 0:
+            print("PAYMENT UNSUCCESSFUL: Cash collected")
+            return False
+        elif self.total < 0:
             print("PAYMENT SUCCESS: Cash collected")
-
-    def process_alcohol(self):
-        if self.Customer.hasAgeProof:
-            time.sleep(randint(10,15))
-            print("Processing alcoholic item")
+            print("Change Returned", abs(self.total))
+            self.total = 0
         else:
-            print("Customer: ", self.Customer,"does not have an ID card")
+            print("PAYMENT SUCCESS: Cash collected")
+        return True
+
