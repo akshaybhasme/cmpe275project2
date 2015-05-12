@@ -4,6 +4,7 @@ class Attendant:
         self.total = 0
         self.alcohol_cost = 0
         self.state = 'Idle'
+        # print("Hi, How are you today?")
 
     def process_item_list(self, items):
         # item needs to behave like Models.Item object. Will this work?
@@ -39,9 +40,9 @@ class Attendant:
             print("PAYMENT SUCCESS: Cash collected")
             print("Change Returned", abs(self.total))
             self.total = 0
-            self.state = 'Idle'
         else:
             print("PAYMENT SUCCESS: Cash collected")
-            self.state = 'Idle'
         return True
 
+    def become_idle(self):
+        self.state = 'Idle'

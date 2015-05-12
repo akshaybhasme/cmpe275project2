@@ -4,6 +4,7 @@ __author__ = 'sid'
 from Actors import Attendant
 import Message
 import json
+import time
 from twisted.internet import protocol, reactor, endpoints
 from twisted.protocols import basic
 from twisted.internet.protocol import ClientFactory
@@ -17,40 +18,48 @@ class AttendantServer(protocol.Protocol):
     def dataReceived(self, data):
         total = 0
         alcoholic = False
-        msg_txt = None
         print data
         try:
             message = json.loads(data)
 
-            if message['type'] == 'process_items':
+            if message['msg_type'] == 'customer_arrived':
+                msg = Message('greeting', 'Hello, how are you doing?')
+
+            elif message['msg_type'] == 'greeting':
+                msg = Message('give_items')
+
+            elif message['msg_type'] == 'process_items':
                 items = message['items']
                 alcoholic = self.attendant.process_item_list(items)
                 if alcoholic:
-                    msg_txt = 'get_age_proof'
+                    msg = Message('show_age_proof')
 
-            elif message['type'] == 'age_proof':
+            elif message['msg_type'] == 'age_proof':
                 age_proof = message['hasAgeProof']
                 if not age_proof:
                     self.attendant.remove_alcoholic()
-                msg_txt = 'get_payment'
+                msg = Message('get_payment')
 
-            elif message['type'] == 'process_card':
+            elif message['msg_type'] == 'process_card':
                 has_card = message['hasDebitOrCreditCard']
                 payment = 0
                 if has_card:
-                    msg_txt = 'success'
+                    msg = Message('success')
                 else:
-                    msg_txt = 'failure'
+                    msg = Message('failure')
 
-            elif message['type'] == 'process_cash':
+            elif message['msg_type'] == 'process_cash':
                 cash = message['cashOnHand']
                 payment = self.attendant.process_cash(cash)
                 if payment:
-                    msg_txt = 'success'
+                    msg = Message('success')
                 else:
-                    msg_txt = 'failure'
+                    msg = Message('insufficient_funds')
 
-            msg = Message(msg_txt, self.customer)
+            elif message['msg_type'] == 'complete' or message['msg_type'] == 'reject':
+                self.attendant.become_idle()
+                msg = Message('next_customer')
+
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             print msg_json
             self.transport.write(msg_json)
@@ -76,7 +85,8 @@ class AttendantServerProtocol(basic.LineReceiver):
         pass
 
     def connectionMade(self):
-        print("connection made")
+        print("connection made in attendant server")
+        #self.transport.write("{\"type\":\"next_customer\"}")
 
     def connectToOtherServer(self, line):
         #host, port = line.split()
@@ -92,9 +102,13 @@ class AttendantServerProtocol(basic.LineReceiver):
 class AttendantClientProtocol(basic.LineReceiver):
 
     def connectionMade(self):
-        print("connection made")
-        self.sendLine("hello Priya")
-        print("customer sent")
+        print("connection made in attendant client")
+        time.sleep(5)
+        self.sendLine(("{\"msg_type\":\"next_customer\"}"))
+        #self.sendLine("hello Priya")
+        # add delay
+        # self.sendLine("{\"type\":\"give_items\"}")
+        # print("request sent")
 
 
 class AttendantClientFactory(ClientFactory):
