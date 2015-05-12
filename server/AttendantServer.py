@@ -84,7 +84,8 @@ class AttendantServerProtocol(basic.LineReceiver):
         pass
 
     def connectionMade(self):
-        print("connection made")
+        print("connection made in attendant server")
+        self.sendLine("{\"type\":\"next_customer\"}")
 
     def connectToOtherServer(self, line):
         #host, port = line.split()
@@ -100,8 +101,8 @@ class AttendantServerProtocol(basic.LineReceiver):
 class AttendantClientProtocol(basic.LineReceiver):
 
     def connectionMade(self):
-        print("connection made")
-        self.sendLine("{\"type\":\"next_customer\"}")
+        print("connection made in attendant client")
+
         # self.sendLine("hello Priya")
         # add delay
         # self.sendLine("{\"type\":\"give_items\"}")
