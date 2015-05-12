@@ -7,7 +7,7 @@ from twisted.internet.defer import Deferred
 
 class CounterServerFactory(protocol.Factory):
     def __init__(self):
-        print "at server factory"
+        print "at server  factory"
         CounterServerProtocol().connectToOtherServer("")
         pass
 
