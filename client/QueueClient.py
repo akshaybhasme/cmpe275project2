@@ -1,12 +1,13 @@
 __author__ = 'jatin'
 
 import sys
-from Actors import Customer
+from Actors.Customer import Customer
 from Models import Item
 from twisted.internet import task
 from twisted.internet.defer import Deferred
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineReceiver
+from Message import Message
 
 
 class QueueClient(LineReceiver):
@@ -17,9 +18,10 @@ class QueueClient(LineReceiver):
 
     def connectionMade(self):
         print("connection made")
-        #cg = ClientGenerator(self)
-        #cg.takeUserInput()
-        self.sendMsg("{\"type\":\"addcustomer\"}")
+        message = Message('addcustomer', Customer())
+        m = message.get_message_json()
+        print m
+        self.sendMsg(m)
         print("customer sent")
 
     def sendMsg(self,msg):

@@ -74,6 +74,6 @@ class Customer:
         self.hasDebitOrCreditCard = obj['hasDebitOrCreditCard']
         self.cashOnHand = obj['cashOnHand']
         for item_json in obj['items']:
-            item = Item()
+            item = Item.Item()
             item.decode_from_json(item_json)
             self.items.append(item)

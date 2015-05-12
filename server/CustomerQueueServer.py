@@ -17,13 +17,14 @@ class CustomerQueueServer(protocol.Protocol):
         try:
             message = json.loads(data)
 
-            if message['type'] == 'addcustomer':
+            if message['msg_type'] == 'addcustomer':
                 print "Adding customer"
                 customer = Customer()
+                customer.object_decoder(message['payload'])
                 customerQueueFactory.add_to_queue(customer)
                 print "Customer added"
 
-            elif message['type'] == 'nextcustomer':
+            elif message['msg_type'] == 'nextcustomer':
                 print "Sending customer"
                 msg = Message('customer', customerQueueFactory.get_from_queue())
                 msg_json = json.dumps(msg, default=lambda o: o.__dict__)
