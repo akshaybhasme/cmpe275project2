@@ -2,7 +2,7 @@ __author__ = 'apurvapawar'
 
 import sys
 
-from client import QueueClient
+from client import ClientProtocol
 from server import AttendantServer
 from server import CounterServer
 from server import CustomerQueueServer
@@ -49,7 +49,7 @@ def counter():
 def generator():
     print "Starting Safeway Customer Generator..."
     # start customer generator
-    QueueClient.task.react(QueueClient.main)
+    ClientProtocol.task.react(ClientProtocol.main)
 
 
 def is_int_string(s):
