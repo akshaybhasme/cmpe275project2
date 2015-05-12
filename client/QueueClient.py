@@ -8,6 +8,8 @@ from twisted.internet.defer import Deferred
 from twisted.internet.protocol import ClientFactory
 from twisted.protocols.basic import LineReceiver
 from Message import Message
+from threading import Thread
+import thread
 
 
 class QueueClient(LineReceiver):
@@ -17,13 +19,8 @@ class QueueClient(LineReceiver):
         self.cg = ClientGenerator(self)
 
     def connectionMade(self):
-        #print("connection made")
-        #message = Message('addcustomer', Customer())
-        #m = message.get_message_json()
-        #print m
-        #self.sendMsg(m)
-        #print("customer sent")
-        self.cg.takeUserInput()
+        thread.start_new_thread(self.cg.takeUserInput, ())
+        print "Connection made"
 
     def sendMsg(self,msg):
         print("sending customer to queue")
@@ -99,7 +96,10 @@ class ClientGenerator:
                 if option == 4:
                     print("reached 4")
                     print(self.client_sender)
-                    self.client_sender.sendMsg(Message('addcustomer', Customer()))
+                    message = Message('addcustomer', Customer())
+                    m = message.get_message_json()
+                    # self.client_sender.sendMsg()
+                    self.client_sender.sendLine(m)
 
                 if option == 5:
                     sys.exit()
