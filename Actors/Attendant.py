@@ -1,24 +1,26 @@
-import time
-from random import randint
-from Models import Item
-
 class Attendant:
     def __init__(self):
         self.alcoholic = False
         self.total = 0
         self.alcohol_cost = 0
+        self.state = 'Idle'
 
     def process_item_list(self, items):
         # item needs to behave like Models.Item object. Will this work?
-        for item in items:
-            if item.is_alcoholic():
-                self.alcoholic = True
-                self.alcohol_cost = item.get_value()
-                print("Alcoholic item found. ID card is required to process item")
-                # The program needs to wait here to get the ID instead of processing the items, or does it?
-                # Maybe the attendant purposely keeps the liquor item for the end
-            self.total = self.total + item.get_value()
-        return self.alcoholic
+        if self.state == 'Idle':
+            self.state = 'Busy'
+            for item in items:
+                if item.is_alcoholic():
+                    self.alcoholic = True
+                    self.alcohol_cost = item.get_value()
+                    print("Alcoholic item found. ID card is required to process item")
+                    # The program needs to wait here to get the ID instead of processing the items, or does it?
+                    # Maybe the attendant purposely keeps the liquor item for the end
+                self.total = self.total + item.get_value()
+            print("Items processed. Your total is: ", self.total)
+            return self.alcoholic
+        else:
+            print("Attendant Busy. Please wait for your turn")
 
     def remove_alcoholic(self):
         self.total -= self.alcohol_cost
@@ -37,7 +39,9 @@ class Attendant:
             print("PAYMENT SUCCESS: Cash collected")
             print("Change Returned", abs(self.total))
             self.total = 0
+            self.state = 'Idle'
         else:
             print("PAYMENT SUCCESS: Cash collected")
+            self.state = 'Idle'
         return True
 
