@@ -5,6 +5,9 @@ from Actors.CustomerQueue import CustomerQueue
 from Actors.Customer import Customer
 import json
 from Message import Message
+from Models import Counter
+import copy
+import config
 
 
 class CustomerQueueServer(protocol.Protocol):
@@ -26,7 +29,7 @@ class CustomerQueueServer(protocol.Protocol):
                 print "Customer added"
 
             elif message['msg_type'] == 'nextcustomer':
-                print "Sending customer!"
+                print "Sending customer"
                 msg = Message('customer', self.customerQueueFactory.get_from_queue())
                 msg_json = json.dumps(msg, default=lambda o: o.__dict__)
                 print msg_json
@@ -51,13 +54,39 @@ class CustomerQueueFactory(protocol.Factory):
         #return self.q.get_customer()
 
     def buildProtocol(self, addr):
-        print "Got connection: " + str(addr)
+        print "Got connection from "+str(addr)
         return CustomerQueueServer(self)
+
+
+class CounterHouse:
+
+    def __init__(self):
+        self.counters = []
+
+    def add_counter(self, c):
+        # add counter
+        print "New Counter being added.."
+        # counter = Counter.Counter()
+        counter = copy.deepcopy(c)
+        self.counters.append(counter)
+
+    def remove_counter(self):
+        # remove counter
+        print ""
+
+    def get_free_counter(self):
+        # get free counter based on flag (busy status)
+        print ""
+        for c in self.counters:
+            if not c.is_busy():
+                return c
+
+
 
 
 def main():
     customerQueueFactory = CustomerQueueFactory()
-    endpoints.serverFromString(reactor, "tcp:1233").listen(customerQueueFactory)
+    endpoints.serverFromString(reactor, "tcp:"+str(config.queue['port'])).listen(customerQueueFactory)
     reactor.run()
 
 
