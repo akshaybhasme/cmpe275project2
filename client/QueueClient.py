@@ -17,15 +17,19 @@ class QueueClient(LineReceiver):
         pass
 
     def connectionMade(self):
-        print("connection made")
-        message = Message('addcustomer', Customer())
-        m = message.get_message_json()
-        print m
-        self.sendMsg(m)
-        print("customer sent")
+        #print("connection made")
+        #message = Message('addcustomer', Customer())
+        #m = message.get_message_json()
+        #print m
+        #self.sendMsg(m)
+        #print("customer sent")
+        self.cg = ClientGenerator(self)
+        self.cg.takeUserInput()
 
     def sendMsg(self,msg):
         print("send data to customer")
+        c = Customer();
+        message = Message('addcustomer', c)
         self.sendLine(msg)
 
     def lineReceived(self, line):
@@ -63,7 +67,6 @@ class ClientGenerator:
 
     def sendRandomCustomerToQueue(self):
         print("sending it to customer")
-        self.client_sender.sendMsg("bye bye")
 
     def takeUserInput(self):
         print("--------------------------------------------------------------------------")
@@ -97,7 +100,7 @@ class ClientGenerator:
                 if option == 4:
                     print("reached 4")
                     print(self.client_sender)
-                    self.client_sender.sendMsg("{\"type\":\"addcustomer\"}")
+                    self.client_sender
 
                 if option == 5:
                     sys.exit()
