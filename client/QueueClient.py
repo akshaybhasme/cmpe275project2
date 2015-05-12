@@ -14,14 +14,23 @@ class QueueClient(LineReceiver):
 
     def connectionMade(self):
         print("connection made")
-        cg = ClientGenerator()
-        cg.takeUserInput()
-        #self.sendLine("{\"type\":\"addcustomer\"}")
+        #cg = ClientGenerator(self)
+        #cg.takeUserInput()
+        self.sendMsg("{\"type\":\"addcustomer\"}")
         print("customer sent")
+
+    def sendMsg(self,msg):
+        print("send data to customer")
+        self.sendLine(msg)
 
 
 
     def lineReceived(self, line):
+        print("receive:", line)
+        if line == self.end:
+            self.transport.loseConnection()
+
+    def dataReceived(self, line):
         print("receive:", line)
         if line == self.end:
             self.transport.loseConnection()
@@ -48,13 +57,14 @@ class ClientFactory(ClientFactory):
 
 class ClientGenerator:
 
-    def __init__(self):
-        self.client_sender = QueueClient()
+    def __init__(self, qc):
+        print(qc)
+        self.client_sender = qc
         print("")
 
     def sendRandomCustomerToQueue(self):
         print("sending it to customer")
-        self.client_sender.sendLine("bye bye")
+        self.client_sender.sendMsg("bye bye")
 
     def takeUserInput(self):
         print("--------------------------------------------------------------------------")
@@ -86,8 +96,10 @@ class ClientGenerator:
                     #send it to queue
                     new_customer=""
                 if(option==4):
-                    self.sendRandomCustomerToQueue()
-                    sys.exit()
+                    print("reached 4")
+                    print(self.client_sender)
+                    self.client_sender.sendMsg("{\"type\":\"addcustomer\"}")
+
 
                 if(option==5):
                     sys.exit()
