@@ -12,7 +12,7 @@ from threading import Thread
 import thread
 
 
-class QueueClient(LineReceiver):
+class ClientProtocol(LineReceiver):
     end = "Bye-bye!"
 
     def __init__(self):
@@ -40,7 +40,7 @@ class QueueClient(LineReceiver):
 
 
 class ClientFactory(ClientFactory):
-    protocol = QueueClient
+    protocol = ClientProtocol
 
     def __init__(self):
         self.done = Deferred()
@@ -58,7 +58,7 @@ class ClientGenerator:
 
     def __init__(self, qc):
         print(qc)
-        self.client_sender = qc
+        self.protocol = qc
         print("")
 
     def sendRandomCustomerToQueue(self):
@@ -74,43 +74,61 @@ class ClientGenerator:
             new_customer = ""
             while True:
                 print("-----------------------------------------------------------------------")
-                print("Enter 1 for Creating Customer")
-                print("Enter 2 for Adding Item")
-                print("Enter 3 If finished shopping")
-                print("Enter 4 for Creating a random customer")
-                print("Enter 5 to exit")
-
+                print("Enter 1 for creating a customer")
+                print("Enter 2 for generating a random customer")
+                print("Enter 3 to exit")
                 option = input("Please Enter your choice")
                 print("\n")
 
                 if option == 1:
-                    new_customer = Customer.Customer()
-                if option == 2:
-                    if new_customer == "":
-                        print("Please create a customer first")
-                    else:
-                        print(new_customer.items)
-                if option == 3:
-                    #send it to queue
-                    new_customer = ""
-                if option == 4:
-                    print("reached 4")
-                    print(self.client_sender)
+                    new_customer = Customer()
+                    del new_customer.items[:]
+                    while True:
+                        print("Enter 1 for Adding Item")
+                        print("Enter 2 to see all the Items")
+                        print("Enter 3 If finished shopping")
+
+                        option2 = input("Please Enter your choice")
+                        if option2 == 1:
+                            item = Item.Item()
+                            new_customer.items.append(item)
+                            print("---------------------New Item Added-------------------------\n")
+
+                        elif option2 == 2:
+                            print("Item Name                    Item Price\n")
+                            print("-----------------------------------------")
+                            for i in new_customer.items:
+                                print(str(i.name)+"                        "+ str(i.value))
+                            print("\n")
+
+                        elif option2 ==3:
+                            message = Message('addcustomer', new_customer)
+                            m = message.get_message_json()
+                            self.protocol.sendLine(m)
+                            print("Customer sent to the queue")
+                            break
+
+
+
+
+                if option==2:
                     message = Message('addcustomer', Customer())
                     m = message.get_message_json()
-                    # self.client_sender.sendMsg()
-                    self.client_sender.sendLine(m)
+                    self.protocol.sendLine(m)
+                    print("Customer sent to the queue")
+                    continue
 
-                if option == 5:
-                    sys.exit()
+                if option ==3:
+                    break
 
         if enterOption == 2:
+            print("Good Bye")
             sys.exit()
 
 
 def main(reactor):
     factory = ClientFactory()
-    reactor.connectTCP('localhost', 1234, factory)
+    reactor.connectTCP('10.189.71.128', 1234, factory)
     return factory.done
 
 
