@@ -33,7 +33,7 @@ class CounterServerProtocol(basic.LineReceiver):
 
 
     def dataReceived(self, data):
-        print data
+        # print data
         global global_customer
         try:
             message = json.loads(data)
@@ -45,7 +45,7 @@ class CounterServerProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'next_customer':
                 self.connectToOtherServer("")
                 time.sleep(3)
-                print global_customer
+                # print global_customer
                 if not has_customer:
                     msg = Message('no_customer',"No customer in the queue at this moment")
                 else:
@@ -80,9 +80,9 @@ class CounterServerProtocol(basic.LineReceiver):
             else:
                 print message['payload']
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
-            print msg_json
+            # print msg_json
             self.transport.write(msg_json)
-
+            time.sleep(2)
 
         except Exception as e:
             print e.message

@@ -23,7 +23,8 @@ class Attendant:
 
     def remove_alcoholic(self):
         self.total -= self.alcohol_cost
-        return "Alcoholic items worth ", self.alcohol_cost, "have been removed. "
+        reply = "Alcoholic items worth ", str(self.alcohol_cost), "have been removed. "
+        return reply
 
     def get_total(self):
         reply = "Your total today is: $", self.total

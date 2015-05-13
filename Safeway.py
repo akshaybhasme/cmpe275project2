@@ -38,7 +38,7 @@ def attendant():
     #     return factory.done
     # AttendantClient.task.react(start)
 
-    AttendantClient.task.react(AttendantClient.main, [sys.argv[2], sys.argv[3]])
+    AttendantClient.task.react(AttendantClient.main, [sys.argv[2], int(sys.argv[3])])
 
 
 def counter():
