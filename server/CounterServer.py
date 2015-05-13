@@ -7,7 +7,7 @@ from twisted.internet.defer import Deferred
 from Actors.Customer import Customer
 import time
 import json
-import Message
+from Message import Message
 
 
 class CounterServerFactory(protocol.Factory):
@@ -52,7 +52,7 @@ class CounterServerProtocol(basic.LineReceiver):
                 #
                 # print "sending msg to attendant"
                 # time.sleep(5)
-                msg = Message('customer_arrived', True)
+                msg = Message('customer_arrived', "")
 
 
             elif message['msg_type'] == 'give_items':
@@ -93,7 +93,7 @@ class CounterServerProtocol(basic.LineReceiver):
         print "Connecting to queue server"
         #host = "10.189.146.171"
         host = "localhost"
-        port = 1233
+        port = 1234
         #factory = CounterClientFactory()
         #factory.protocol = CounterClientProtocol
         self.queue_factory.protocol = CounterClientProtocol
