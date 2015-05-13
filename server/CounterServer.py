@@ -158,14 +158,14 @@ class AttendantClientFactory(ClientFactory):
         self.done.callback(None)
 
 
-def main():
+def main(port):
     import sys
     from twisted.python import log
 
     log.startLogging(sys.stdout)
     factory = CounterServerFactory()
     factory.protocol = CounterServerProtocol
-    reactor.listenTCP(server.self['port'], factory)
+    reactor.listenTCP(port, factory)
     reactor.run()
 
 if __name__ == '__main__':

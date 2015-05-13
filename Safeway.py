@@ -18,32 +18,23 @@ def main():
 
 
 def queue():
-    # if len(sys.argv) < 3:
-    #     print "Please enter number of counters as second argument for argument 'shop'"
-    #     sys.exit(0)
-    #
-    # if not is_int_string(sys.argv[2]):
-    #     print "Second argument should be of type integer for argument 'shop'"
-    #     sys.exit(0)
-    #
-    # number_of_counters = int(sys.argv[2])
-    #
-    # print "Starting Shop with "+str(number_of_counters)+" Counters..."
-    # start shop server with above number of counters
+    # start attendant server
     print "Starting Safeway Shop Queue..."
     CustomerQueueServer.main()
 
 
 def attendant():
+    check_second_argument()
     print "Starting Safeway Attendant..."
     # start attendant server
-    AttendantServer.main()
+    AttendantServer.main(sys.argv[2])
 
 
 def counter():
+    check_second_argument()
     print "Starting Safeway Counter..."
     # start counter server
-    CounterServer.main()
+    CounterServer.main(sys.argv[2])
 
 
 def generator():
@@ -58,6 +49,16 @@ def is_int_string(s):
         return True
     except ValueError:
         return False
+
+
+def check_second_argument():
+    if len(sys.argv) < 3:
+        print "Please enter port number second argument."
+        sys.exit(0)
+
+    if not is_int_string(sys.argv[2]):
+        print "Second argument should be of type integer for port number."
+        sys.exit(0)
 
 
 if __name__ == '__main__':
