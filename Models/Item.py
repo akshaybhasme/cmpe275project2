@@ -1,10 +1,12 @@
 __author__ = 'apurvapawar'
 
 from random import randint
-import config
 
-MAX_ITEM_VALUE = config.item['MAX_ITEM_VALUE']
-ITEM_ALCOHOL_PROBABILITY = config.item['ITEM_ALCOHOL_PROBABILITY']
+from Config import info
+
+
+MAX_ITEM_VALUE = info.item['MAX_ITEM_VALUE']
+ITEM_ALCOHOL_PROBABILITY = info.item['ITEM_ALCOHOL_PROBABILITY']
 
 
 class Item:

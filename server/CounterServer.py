@@ -5,9 +5,9 @@ from twisted.protocols import basic
 from twisted.internet.protocol import ClientFactory
 from twisted.internet.defer import Deferred
 from Actors.Customer import Customer
-import time
 import json
 from Message import Message
+from Config import server
 
 
 class CounterServerFactory(protocol.Factory):
@@ -21,10 +21,12 @@ class CounterServerFactory(protocol.Factory):
     def buildProtocol(self, addr):
         return CounterServerProtocol()
 
+
 class CounterServerProtocol(basic.LineReceiver):
 
     def __init__(self):
         self.queue_factory = CounterClientFactory()
+        self.customer = None
         #self.queue_factory.protocol = CounterClientProtocol
         pass
 
@@ -42,7 +44,7 @@ class CounterServerProtocol(basic.LineReceiver):
                 self.customer.object_decoder(message['payload'])
 
             elif message['msg_type'] == 'greeting':
-                msg = Message('greeting',"M great!!")
+                msg = Message('greeting', "M great!!")
 
             elif message['msg_type'] == 'next_customer':
                 # print "Got msg from attendant"
@@ -54,21 +56,17 @@ class CounterServerProtocol(basic.LineReceiver):
                 # time.sleep(5)
                 msg = Message('customer_arrived', "")
 
-
             elif message['msg_type'] == 'give_items':
                 msg = Message('process_items', self.customer.get_items())
 
-
             elif message['msg_type'] == 'show_age_proof':
                 msg = Message('age_proof', self.customer.has_age_proof())
-
 
             elif message['msg_type'] == 'get_payment':
                 if self.customer.hasDebitOrCreditCard:
                     msg = Message('hasDebitOrCreditCard', "")
                 else:
-                    msg = Message('cashOnHand',self.customer.cashOnHand)
-
+                    msg = Message('cashOnHand', self.customer.cashOnHand)
 
             elif message['msg_type'] == 'insufficient_funds':
                 self.customer = None
@@ -76,7 +74,6 @@ class CounterServerProtocol(basic.LineReceiver):
 
             elif message['msg_type'] == 'success':
                 msg = Message('complete', "")
-
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             print msg_json
@@ -92,14 +89,14 @@ class CounterServerProtocol(basic.LineReceiver):
         #port = int(port)
         print "Connecting to queue server"
         #host = "10.189.146.171"
-        host = "localhost"
-        port = 1234
+        host = server.queue['ip']
+        port = server.queue['port']
         #factory = CounterClientFactory()
         #factory.protocol = CounterClientProtocol
         self.queue_factory.protocol = CounterClientProtocol
         reactor.connectTCP(host, port, self.queue_factory)
 
-    def connectToAttendantServer(self,line):
+    def connectToAttendantServer(self, line):
         print "Connecting to attendant server"
         #host = "10.189.146.171"
         host = "localhost"
@@ -107,6 +104,7 @@ class CounterServerProtocol(basic.LineReceiver):
         factory = AttendantClientFactory()
         factory.protocol = AttendantClientProtocol
         reactor.connectTCP(host, port, factory)
+
 
 class CounterClientProtocol(basic.LineReceiver):
 
@@ -119,6 +117,7 @@ class CounterClientProtocol(basic.LineReceiver):
         self.sendLine("{\"msg_type\":\"nextcustomer\"}")
         print("Fetch Customer from queue")
 
+
 class CounterClientFactory(ClientFactory):
     protocol = CounterClientProtocol()
 
@@ -129,10 +128,10 @@ class CounterClientFactory(ClientFactory):
         print('connection failed:', reason.getErrorMessage())
         self.done.errback(reason)
 
-
     def clientConnectionLost(self, connector, reason):
         print('connection lost:', reason.getErrorMessage())
         self.done.callback(None)
+
 
 class AttendantClientProtocol(basic.LineReceiver):
 
@@ -150,15 +149,14 @@ class AttendantClientFactory(ClientFactory):
     def __init__(self):
         self.done = Deferred()
 
-
     def clientConnectionFailed(self, connector, reason):
         print('connection failed:', reason.getErrorMessage())
         self.done.errback(reason)
 
-
     def clientConnectionLost(self, connector, reason):
         print('connection lost:', reason.getErrorMessage())
         self.done.callback(None)
+
 
 def main():
     import sys
@@ -167,7 +165,7 @@ def main():
     log.startLogging(sys.stdout)
     factory = CounterServerFactory()
     factory.protocol = CounterServerProtocol
-    reactor.listenTCP(1567, factory)
+    reactor.listenTCP(server.self['port'], factory)
     reactor.run()
 
 if __name__ == '__main__':

@@ -3,13 +3,14 @@ __author__ = 'apurvapawar'
 from random import randint
 
 from Models import Item
-import config
+from Config import info
 
-MAX_ITEMS = config.customer['MAX_ITEMS']
-CARD_PROBABILITY = config.customer['CARD_PROBABILITY']
-LEGAL_AGE = config.customer['LEGAL_AGE']
-AGE_PROOF_PROBABILITY = config.customer['AGE_PROOF_PROBABILITY']
-MAX_CASH_IN_HAND = config.customer['MAX_CASH_IN_HAND']
+
+MAX_ITEMS = info.customer['MAX_ITEMS']
+CARD_PROBABILITY = info.customer['CARD_PROBABILITY']
+LEGAL_AGE = info.customer['LEGAL_AGE']
+AGE_PROOF_PROBABILITY = info.customer['AGE_PROOF_PROBABILITY']
+MAX_CASH_IN_HAND = info.customer['MAX_CASH_IN_HAND']
 
 
 class Customer:

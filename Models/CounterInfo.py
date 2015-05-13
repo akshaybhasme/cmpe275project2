@@ -1,4 +1,4 @@
-class Counter:
+class CounterInfo:
 
     def __init__(self):
         self.name = ""

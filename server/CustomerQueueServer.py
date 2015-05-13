@@ -1,13 +1,13 @@
 __author__ = 'akshaybhasme'
 
 from twisted.internet import protocol, reactor, endpoints
+import json
+import copy
+
 from Actors.CustomerQueue import CustomerQueue
 from Actors.Customer import Customer
-import json
 from Message import Message
-from Models import Counter
-import copy
-import config
+from Config import server
 
 
 class CustomerQueueServer(protocol.Protocol):
@@ -86,7 +86,7 @@ class CounterHouse:
 
 def main():
     customerQueueFactory = CustomerQueueFactory()
-    endpoints.serverFromString(reactor, "tcp:"+str(config.queue['port'])).listen(customerQueueFactory)
+    endpoints.serverFromString(reactor, "tcp:"+str(server.queue['port'])).listen(customerQueueFactory)
     reactor.run()
 
 
