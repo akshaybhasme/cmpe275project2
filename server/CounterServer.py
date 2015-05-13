@@ -65,17 +65,17 @@ class CounterServerProtocol(basic.LineReceiver):
 
             elif message['msg_type'] == 'get_payment':
                 if self.customer.hasDebitOrCreditCard:
-                    msg = Message('hasDebitOrCreditCard', True)
+                    msg = Message('hasDebitOrCreditCard', "")
                 else:
                     msg = Message('cashOnHand',self.customer.cashOnHand)
 
 
             elif message['msg_type'] == 'insufficient_funds':
                 self.customer = None
-                msg = Message('reject', True)
+                msg = Message('reject', "")
 
             elif message['msg_type'] == 'success':
-                msg = Message('complete', True)
+                msg = Message('complete', "")
 
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)

@@ -21,44 +21,44 @@ class AttendantServer(protocol.Protocol):
         print data
         try:
             message = json.loads(data)
-
+            print("Message received")
             if message['msg_type'] == 'customer_arrived':
                 msg = Message('greeting', 'Hello, how are you doing?')
 
             elif message['msg_type'] == 'greeting':
-                msg = Message('give_items')
+                msg = Message('give_items',"")
 
             elif message['msg_type'] == 'process_items':
                 items = message['items']
                 alcoholic = self.attendant.process_item_list(items)
                 if alcoholic:
-                    msg = Message('show_age_proof')
+                    msg = Message('show_age_proof',"")
 
             elif message['msg_type'] == 'age_proof':
                 age_proof = message['hasAgeProof']
                 if not age_proof:
                     self.attendant.remove_alcoholic()
-                msg = Message('get_payment')
+                msg = Message('get_payment',"")
 
             elif message['msg_type'] == 'process_card':
                 has_card = message['hasDebitOrCreditCard']
                 payment = 0
                 if has_card:
-                    msg = Message('success')
+                    msg = Message('success',"")
                 else:
-                    msg = Message('failure')
+                    msg = Message('failure',"")
 
             elif message['msg_type'] == 'process_cash':
                 cash = message['cashOnHand']
                 payment = self.attendant.process_cash(cash)
                 if payment:
-                    msg = Message('success')
+                    msg = Message('success',"")
                 else:
-                    msg = Message('insufficient_funds')
+                    msg = Message('insufficient_funds',"")
 
             elif message['msg_type'] == 'complete' or message['msg_type'] == 'reject':
                 self.attendant.become_idle()
-                msg = Message('next_customer')
+                msg = Message('next_customer',"")
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             print msg_json

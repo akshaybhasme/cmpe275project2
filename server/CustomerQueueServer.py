@@ -49,9 +49,9 @@ class CustomerQueueFactory(protocol.Factory):
         self.q.add_customer(customer)
 
     def get_from_queue(self):
-        cust = Customer()
-        return cust
-        #return self.q.get_customer()
+        #cust = Customer()
+        #return cust
+        return self.q.get_customer()
 
     def buildProtocol(self, addr):
         print "Got connection from "+str(addr)

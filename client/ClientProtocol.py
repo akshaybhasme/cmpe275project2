@@ -128,7 +128,7 @@ class ClientGenerator:
 
 def main(reactor):
     factory = ClientFactory()
-    reactor.connectTCP('10.189.71.128', 1234, factory)
+    reactor.connectTCP('localhost', 1234, factory)
     return factory.done
 
 
