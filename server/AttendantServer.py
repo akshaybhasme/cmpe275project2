@@ -9,6 +9,7 @@ from twisted.internet import protocol, reactor, endpoints
 from twisted.protocols import basic
 from twisted.internet.protocol import ClientFactory
 from twisted.internet.defer import Deferred
+from Config import server
 
 
 class AttendantServer(protocol.Protocol):
@@ -93,8 +94,8 @@ class AttendantServerProtocol(basic.LineReceiver):
         #port = int(port)
         print "connect to other server"
         #host = "10.189.235.131"
-        host = "localhost"
-        port = 1567
+        host = server.queue['ip']
+        port = server.queue['port']
         factory = AttendantClientFactory()
         factory.protocol = AttendantClientProtocol
         reactor.connectTCP(host, port, factory)

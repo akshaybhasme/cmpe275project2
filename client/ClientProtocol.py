@@ -10,6 +10,7 @@ from twisted.protocols.basic import LineReceiver
 from Message import Message
 from threading import Thread
 import thread
+from Config import server
 
 
 class ClientProtocol(LineReceiver):
@@ -128,7 +129,7 @@ class ClientGenerator:
 
 def main(reactor):
     factory = ClientFactory()
-    reactor.connectTCP('localhost', 1234, factory)
+    reactor.connectTCP(server.queue['ip'], server.queue['port'], factory)
     return factory.done
 
 
