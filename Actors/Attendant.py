@@ -1,10 +1,12 @@
+import Models.Item as Item
+
+
 class Attendant:
     def __init__(self):
         self.alcoholic = False
         self.total = 0
         self.alcohol_cost = 0
         self.state = 'Idle'
-        # print("Hi, How are you today?")
 
     def process_item_list(self, items):
         # item needs to behave like Models.Item object. Will this work?
@@ -12,9 +14,12 @@ class Attendant:
             self.state = 'Busy'
             for item in items:
                 if item.is_alcoholic():
-                    self.alcoholic = True
                     self.alcohol_cost = item.get_value()
-                    print("Alcoholic item found. ID card is required to process item")
+                    if self.alcoholic:
+                        print("Another Alcoholic item found")
+                    else:
+                        print("Alcoholic item found. ID card is required to process item")
+                        self.alcoholic = True
                     # The program needs to wait here to get the ID instead of processing the items, or does it?
                     # Maybe the attendant purposely keeps the liquor item for the end
                 self.total = self.total + item.get_value()
@@ -34,7 +39,7 @@ class Attendant:
     def process_cash(self, cash):
         self.total -= cash
         if self.total > 0:
-            print("PAYMENT UNSUCCESSFUL: Cash collected")
+            print("PAYMENT UNSUCCESSFUL: Insufficient funds")
             return False
         elif self.total < 0:
             print("PAYMENT SUCCESS: Cash collected")
