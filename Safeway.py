@@ -2,8 +2,8 @@ __author__ = 'apurvapawar'
 
 import sys
 
-from client import ClientProtocol
-from server import AttendantServer
+from client import CustomerGenerator
+from client import AttendantClient
 from server import CounterServer
 from server import CustomerQueueServer
 
@@ -27,7 +27,7 @@ def attendant():
     check_second_argument()
     print "Starting Safeway Attendant..."
     # start attendant server
-    AttendantServer.main(int(sys.argv[2]))
+    AttendantClient.task.react(AttendantClient.main(sys.argv[2], sys.argv[3]))
 
 
 def counter():
@@ -40,7 +40,7 @@ def counter():
 def generator():
     print "Starting Safeway Customer Generator..."
     # start customer generator
-    ClientProtocol.task.react(ClientProtocol.main)
+    CustomerGenerator.task.react(CustomerGenerator.main)
 
 
 def is_int_string(s):

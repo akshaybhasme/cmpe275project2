@@ -105,12 +105,12 @@ class AttendantClientFactory(ClientFactory):
         self.done.callback(None)
 
 
-def main(reactor):
+def main(reactor, ip, port):
 
     factory = AttendantClientFactory()
     factory.protocol = AttendantClientProtocol
-    reactor.connectTCP('10.189.235.131', 3030, factory)
+    reactor.connectTCP(ip, port, factory)
     return factory.done
 
 if __name__ == '__main__':
-    task.react(main)
+    task.react(main('10.189.235.131', 3030))
