@@ -9,45 +9,42 @@ class Attendant:
         self.state = 'Idle'
 
     def process_item_list(self, items):
-        # item needs to behave like Models.Item object. Will this work?
         if self.state == 'Idle':
             self.state = 'Busy'
             for item in items:
                 if item.is_alcoholic():
-                    self.alcohol_cost = item.get_value()
-                    if self.alcoholic:
-                        print("Another Alcoholic item found")
-                    else:
-                        print("Alcoholic item found. ID card is required to process item")
-                        self.alcoholic = True
+                    self.alcohol_cost += item.get_value()
+                    self.alcoholic = True
                     # The program needs to wait here to get the ID instead of processing the items, or does it?
                     # Maybe the attendant purposely keeps the liquor item for the end
                 self.total = self.total + item.get_value()
-            print("Items processed. Your total is: ", self.total)
+            # print("Items processed. Your total is: ", self.total)
             return self.alcoholic
-        else:
-            print("Attendant Busy. Please wait for your turn")
 
     def remove_alcoholic(self):
         self.total -= self.alcohol_cost
-        print("Alcoholic items worth ", self.alcohol_cost, " removed")
+        return "Alcoholic items worth ", self.alcohol_cost, "have been removed. "
+
+    def get_total(self):
+        reply = "Your total today is: $", self.total
+        return reply
 
     def process_card(self):
-        print("PAYMENT SUCCESS: Amount deducted from Card :$", self.total)
-        return True
+        # need to check for failure and cash back
+        reply = "PAYMENT SUCCESSFUL: Amount deducted from Card :$", self.total
+        return reply
 
     def process_cash(self, cash):
         self.total -= cash
+        reply = None
         if self.total > 0:
-            print("PAYMENT UNSUCCESSFUL: Insufficient funds")
-            return False
+            reply = "Sorry, but your short by:$ ", self.total
         elif self.total < 0:
-            print("PAYMENT SUCCESS: Cash collected")
-            print("Change Returned", abs(self.total))
+            reply = "Thank you. Here's you change: $", abs(self.total), "Have a nice day. :)"
             self.total = 0
         else:
-            print("PAYMENT SUCCESS: Cash collected")
-        return True
+            reply = "Thank you. Your payment is processed. Have a nice day. :)"
+        return reply
 
     def become_idle(self):
         self.state = 'Idle'

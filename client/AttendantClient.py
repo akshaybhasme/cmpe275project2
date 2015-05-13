@@ -30,17 +30,21 @@ class AttendantClientProtocol(LineReceiver):
             message = json.loads(data)
             # print("Message received")
             if message['msg_type'] == 'customer_arrived':
-                msg = Message('greeting', 'Hello, how are you doing?')
+                # print message['payload']
+                msg = Message('greeting', 'Hello, how are you doing today?')
 
             elif message['msg_type'] == 'greeting':
-                msg = Message('give_items', "")
+                print message['payload']
+                msg = Message('give_items', "I'm doing good.Thank you.\nCould you pass along all the items?")
 
             elif message['msg_type'] == 'no_customer':
-                print("Haila, No Customer!!")
+                # this payload does not need to be printed in the final deliverable
+                # print message['payload']
                 time.sleep(2)
-                msg = Message('next_customer', 'soon')
+                msg = Message('next_customer', 'Next in line?')
 
             elif message['msg_type'] == 'process_items':
+                print message['payload']
                 items = []
                 for i in message['payload']:
                     item = Item()
@@ -48,40 +52,47 @@ class AttendantClientProtocol(LineReceiver):
                     items.append(item)
                 alcoholic = self.attendant.process_item_list(items)
                 if alcoholic:
-                    msg = Message('show_age_proof',"")
+                    msg = Message('show_age_proof', "I need to see your ID for the alcoholic item")
+                else:
+                    result = self.attendant.get_total()
+                    msg = Message('get_payment', result)
 
             elif message['msg_type'] == 'age_proof':
+                print message['payload']
                 age_proof = message['payload']
+                result = ''
                 if not age_proof:
-                    self.attendant.remove_alcoholic()
-                msg = Message('get_payment',"")
+                    result += self.attendant.remove_alcoholic()
+                # need to display amount now
+                result += self.attendant.get_total()
+                msg = Message('get_payment', result)
 
             elif message['msg_type'] == 'process_card':
+                print message['payload']
                 has_card = message['payload']
-                payment = 0
-                if has_card:
-                    msg = Message('success',"")
-                else:
-                    msg = Message('failure',"")
+                result = self.attendant.process_card()
+                msg = Message('success', result)
 
             elif message['msg_type'] == 'process_cash':
+                print message['payload']
                 cash = message['payload']
                 payment = self.attendant.process_cash(cash)
-                if payment:
-                    msg = Message('success',"")
+                success = self.attendant.get_total()
+                if success == 0:
+                    msg = Message('success', payment)
                 else:
-                    msg = Message('insufficient_funds',"")
+                    msg = Message('insufficient_funds', payment)
 
             elif message['msg_type'] == 'complete' or message['msg_type'] == 'reject':
+                print message['payload']
                 self.attendant.become_idle()
-                msg = Message('next_customer',"")
+                msg = Message('next_customer', "next customer in line please")
 
             else:
-                msg = Message('none of these satisfied', "")
+                print message['payload']
+                msg = Message('oops', "none of these conditions satisfied")
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
-            # print msg_json
-            #self.transport.write(msg_json)
             self.sendLine(msg_json)
 
         except Exception as e:

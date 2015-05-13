@@ -38,40 +38,47 @@ class CounterServerProtocol(basic.LineReceiver):
         try:
             message = json.loads(data)
 
-
             if message['msg_type'] == 'greeting':
-                msg = Message('greeting', "M great!!")
+                print message['payload']
+                msg = Message('greeting', "M great!! And You?")
 
             elif message['msg_type'] == 'next_customer':
                 self.connectToOtherServer("")
                 time.sleep(3)
                 print global_customer
                 if not has_customer:
-
-                    msg = Message('no_customer',"")
+                    msg = Message('no_customer',"No customer in the queue at this moment")
                 else:
+                    print message['payload']
                     msg = Message('customer_arrived', "")
 
             elif message['msg_type'] == 'give_items':
+                print message['payload']
                 msg = Message('process_items', global_customer.get_items())
 
             elif message['msg_type'] == 'show_age_proof':
+                print message['payload']
                 msg = Message('age_proof', global_customer.has_age_proof())
 
             elif message['msg_type'] == 'get_payment':
+                print message['payload']
                 if global_customer.hasDebitOrCreditCard:
                     msg = Message('process_card', True)
                 else:
                     msg = Message('process_cash', global_customer.cashOnHand)
 
             elif message['msg_type'] == 'insufficient_funds':
+                print message['payload']
                 #global_customer = None
-                msg = Message('reject', "")
+                msg = Message('reject', "Oops! Sorry. I'll come back again")
 
             elif message['msg_type'] == 'success':
+                print message['payload']
                 #global_customer = None
-                msg = Message('complete', "")
+                msg = Message('complete', "Thanks. You too :)")
 
+            else:
+                print message['payload']
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             print msg_json
             self.transport.write(msg_json)
@@ -118,11 +125,11 @@ class CounterClientProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'no_customer':
                 has_customer = False
 
-
         except Exception as e:
             print e.message
             # self.transport.write("Buddy, you screwed up! in AttendantServer:(")
             pass
+
 
 class CounterClientFactory(ClientFactory):
     protocol = CounterClientProtocol()
