@@ -62,9 +62,9 @@ class AttendantClientProtocol(LineReceiver):
                 age_proof = message['payload']
                 result = ''
                 if not age_proof:
-                    result += self.attendant.remove_alcoholic()
+                    result += str(self.attendant.remove_alcoholic())
                 # need to display amount now
-                result += self.attendant.get_total()
+                result += str(self.attendant.get_total())
                 msg = Message('get_payment', result)
 
             elif message['msg_type'] == 'process_card':
