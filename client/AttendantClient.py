@@ -113,4 +113,4 @@ def main(reactor, ip, port):
     return factory.done
 
 if __name__ == '__main__':
-    task.react(main('10.189.235.131', 3030))
+    task.react(main, ["localhost", 3030])

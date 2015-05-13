@@ -7,6 +7,9 @@ from client import AttendantClient
 from server import CounterServer
 from server import CustomerQueueServer
 
+from client.AttendantClient import AttendantClientFactory
+from client.AttendantClient import AttendantClientProtocol
+
 
 def main():
     options = {"queue": queue, "attendant": attendant, "counter": counter, "generator": generator}
@@ -24,10 +27,18 @@ def queue():
 
 
 def attendant():
-    check_second_argument()
+    check_arguments_for_attendant()
     print "Starting Safeway Attendant..."
     # start attendant server
-    AttendantClient.task.react(AttendantClient.main(sys.argv[2], sys.argv[3]))
+    #
+    # def start(reactor):
+    #     factory = AttendantClientFactory()
+    #     factory.protocol = AttendantClientProtocol
+    #     reactor.connectTCP(sys.argv[2], sys.argv[3], factory)
+    #     return factory.done
+    # AttendantClient.task.react(start)
+
+    AttendantClient.task.react(AttendantClient.main, [sys.argv[2], sys.argv[3]])
 
 
 def counter():
@@ -58,6 +69,16 @@ def check_second_argument():
 
     if not is_int_string(sys.argv[2]):
         print "Second argument should be of type integer for port number."
+        sys.exit(0)
+
+
+def check_arguments_for_attendant():
+    if len(sys.argv) < 4:
+        print "Please enter correct set of arguments (ip, port) for attendant."
+        sys.exit(0)
+
+    if not is_int_string(sys.argv[3]):
+        print "Third argument should be of type integer for port number."
         sys.exit(0)
 
 
