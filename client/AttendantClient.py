@@ -25,7 +25,7 @@ class AttendantClientProtocol(LineReceiver):
     def dataReceived(self, data):
         total = 0
         alcoholic = False
-        print data
+        # print data
         try:
             message = json.loads(data)
             # print("Message received")
@@ -94,6 +94,7 @@ class AttendantClientProtocol(LineReceiver):
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             self.sendLine(msg_json)
+            time.sleep(2)
 
         except Exception as e:
             print e.message
