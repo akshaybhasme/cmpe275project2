@@ -20,6 +20,7 @@ class Customer:
         self.hasDebitOrCreditCard = False
         self.cashOnHand = 0
         self.items = []
+        self.timestamp = None
         self.generate_customer()
 
     def generate_items(self):
@@ -55,6 +56,9 @@ class Customer:
     def get_items(self):
         return self.items
 
+    def get_timestamp(self):
+        return self.timestamp
+
     def set_adult(self, is_adult):
         self.isAdult = is_adult
         
@@ -69,6 +73,9 @@ class Customer:
 
     def set_items(self, items):
         self.items = items
+
+    def set_timestamp(self, t):
+        self.timestamp = t
 
     def object_decoder(self, obj):
         self.isAdult = obj['isAdult']
