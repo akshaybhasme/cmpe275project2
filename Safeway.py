@@ -27,14 +27,14 @@ def attendant():
     check_second_argument()
     print "Starting Safeway Attendant..."
     # start attendant server
-    AttendantServer.main(sys.argv[2])
+    AttendantServer.main(int(sys.argv[2]))
 
 
 def counter():
     check_second_argument()
     print "Starting Safeway Counter..."
     # start counter server
-    CounterServer.main(sys.argv[2])
+    CounterServer.main(int(sys.argv[2]))
 
 
 def generator():
