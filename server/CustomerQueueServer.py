@@ -30,7 +30,11 @@ class CustomerQueueServer(protocol.Protocol):
 
             elif message['msg_type'] == 'nextcustomer':
                 print "Sending customer"
-                msg = Message('customer', self.customerQueueFactory.get_from_queue())
+                if self.customerQueueFactory.has_customer():
+                    msg = Message('customer', self.customerQueueFactory.get_from_queue())
+                else:
+                    msg = Message('no_customer', "")
+
                 msg_json = json.dumps(msg, default=lambda o: o.__dict__)
                 print msg_json
                 self.transport.write(msg_json)
@@ -49,9 +53,10 @@ class CustomerQueueFactory(protocol.Factory):
         self.q.add_customer(customer)
 
     def get_from_queue(self):
-        #cust = Customer()
-        #return cust
         return self.q.get_customer()
+
+    def has_customer(self):
+        return self.q.has_customer()
 
     def buildProtocol(self, addr):
         print "Got connection from "+str(addr)

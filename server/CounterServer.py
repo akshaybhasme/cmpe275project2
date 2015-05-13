@@ -8,14 +8,14 @@ from Actors.Customer import Customer
 import json
 from Message import Message
 from Config import server
-
+import time
+global_customer = Customer()
+has_customer = False
 
 class CounterServerFactory(protocol.Factory):
     def __init__(self):
         print "at server  factory"
         CounterServerProtocol().connectToOtherServer("")
-        #time.sleep(3)
-        #CounterServerProtocol().connectToAttendantServer("")
         pass
 
     def buildProtocol(self, addr):
@@ -26,58 +26,56 @@ class CounterServerProtocol(basic.LineReceiver):
 
     def __init__(self):
         self.queue_factory = CounterClientFactory()
-        self.customer = None
-        #self.queue_factory.protocol = CounterClientProtocol
         pass
 
     def connectionMade(self):
         print("Connection made with Counter Server")
-        self.connectToAttendantServer("")
+
 
     def dataReceived(self, data):
         print data
+        global global_customer
         try:
             message = json.loads(data)
 
-            if message['msg_type'] == 'customer':
-                self.customer = Customer()
-                self.customer.object_decoder(message['payload'])
 
-            elif message['msg_type'] == 'greeting':
+            if message['msg_type'] == 'greeting':
                 msg = Message('greeting', "M great!!")
 
             elif message['msg_type'] == 'next_customer':
-                # print "Got msg from attendant"
-                # #proto = self.queue_factory.protocol
-                # #proto.nextCustomer()
-                # self.queue_factory.nextCustomer()
-                #
-                # print "sending msg to attendant"
-                # time.sleep(5)
-                msg = Message('customer_arrived', "")
+                self.connectToOtherServer("")
+                time.sleep(3)
+                print global_customer
+                if not has_customer:
+
+                    msg = Message('no_customer',"")
+                else:
+                    msg = Message('customer_arrived', "")
 
             elif message['msg_type'] == 'give_items':
-                msg = Message('process_items', self.customer.get_items())
+                msg = Message('process_items', global_customer.get_items())
 
             elif message['msg_type'] == 'show_age_proof':
-                msg = Message('age_proof', self.customer.has_age_proof())
+                msg = Message('age_proof', global_customer.has_age_proof())
 
             elif message['msg_type'] == 'get_payment':
-                if self.customer.hasDebitOrCreditCard:
-                    msg = Message('hasDebitOrCreditCard', "")
+                if global_customer.hasDebitOrCreditCard:
+                    msg = Message('process_card', True)
                 else:
-                    msg = Message('cashOnHand', self.customer.cashOnHand)
+                    msg = Message('process_cash', global_customer.cashOnHand)
 
             elif message['msg_type'] == 'insufficient_funds':
-                self.customer = None
+                #global_customer = None
                 msg = Message('reject', "")
 
             elif message['msg_type'] == 'success':
+                #global_customer = None
                 msg = Message('complete', "")
 
             msg_json = json.dumps(msg, default=lambda o: o.__dict__)
             print msg_json
             self.transport.write(msg_json)
+
 
         except Exception as e:
             print e.message
@@ -85,10 +83,8 @@ class CounterServerProtocol(basic.LineReceiver):
             pass
 
     def connectToOtherServer(self, line):
-        #host, port = line.split()
-        #port = int(port)
+
         print "Connecting to queue server"
-        #host = "10.189.146.171"
         host = server.queue['ip']
         port = server.queue['port']
         #factory = CounterClientFactory()
@@ -96,55 +92,40 @@ class CounterServerProtocol(basic.LineReceiver):
         self.queue_factory.protocol = CounterClientProtocol
         reactor.connectTCP(host, port, self.queue_factory)
 
-    def connectToAttendantServer(self, line):
-        print "Connecting to attendant server"
-        #host = "10.189.146.171"
-        host = "localhost"
-        port = 3030
-        factory = AttendantClientFactory()
-        factory.protocol = AttendantClientProtocol
-        reactor.connectTCP(host, port, factory)
-
 
 class CounterClientProtocol(basic.LineReceiver):
 
     def connectionMade(self):
         print("Connection made with the Queue Server")
         self.sendLine("{\"msg_type\":\"nextcustomer\"}")
-        print("Fetch Customer from queue")
 
     def nextCustomer(self):
         self.sendLine("{\"msg_type\":\"nextcustomer\"}")
         print("Fetch Customer from queue")
 
+    def dataReceived(self, data):
+        print " Next customer received from Queue Server: " + data
+        global global_customer
+        global has_customer
+        try:
+            message = json.loads(data)
+
+            if message['msg_type'] == 'customer':
+                has_customer = True
+                global_customer = Customer()
+                global_customer.object_decoder(message['payload'])
+
+            elif message['msg_type'] == 'no_customer':
+                has_customer = False
+
+
+        except Exception as e:
+            print e.message
+            # self.transport.write("Buddy, you screwed up! in AttendantServer:(")
+            pass
 
 class CounterClientFactory(ClientFactory):
     protocol = CounterClientProtocol()
-
-    def __init__(self):
-        self.done = Deferred()
-
-    def clientConnectionFailed(self, connector, reason):
-        print('connection failed:', reason.getErrorMessage())
-        self.done.errback(reason)
-
-    def clientConnectionLost(self, connector, reason):
-        print('connection lost:', reason.getErrorMessage())
-        self.done.callback(None)
-
-
-class AttendantClientProtocol(basic.LineReceiver):
-
-    def connectionMade(self):
-        print("Connection made with Attendant Server")
-        #self.sendLine("{\"msg_type\":\"greeting\"}","{\"payload\":\"Hello Attendant!! Morning\"}")
-
-    def dataReceived(self, data):
-        print data
-
-
-class AttendantClientFactory(ClientFactory):
-    protocol = AttendantClientProtocol()
 
     def __init__(self):
         self.done = Deferred()
@@ -169,4 +150,4 @@ def main(port):
     reactor.run()
 
 if __name__ == '__main__':
-    main()
+    main(3030)

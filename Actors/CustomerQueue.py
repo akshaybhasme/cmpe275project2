@@ -16,6 +16,13 @@ class CustomerQueue:
         customer = self.q.get()
         return customer
 
+    def has_customer(self):
+        if self.q.empty():
+            return False
+        else:
+            return True
+
+
 
 def main():
     q = CustomerQueue()
