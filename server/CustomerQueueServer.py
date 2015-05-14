@@ -3,6 +3,7 @@ __author__ = 'akshaybhasme'
 from twisted.internet import protocol, reactor, endpoints
 import json
 import copy
+import time
 
 from Actors.CustomerQueue import CustomerQueue
 from Actors.Customer import Customer
@@ -25,13 +26,17 @@ class CustomerQueueServer(protocol.Protocol):
                 print "Adding customer"
                 customer = Customer()
                 customer.object_decoder(message['payload'])
+                customer.set_timestamp(time.time())
                 self.customerQueueFactory.add_to_queue(customer)
                 print "Customer added"
 
             elif message['msg_type'] == 'nextcustomer':
                 print "Sending customer"
                 if self.customerQueueFactory.has_customer():
-                    msg = Message('customer', self.customerQueueFactory.get_from_queue())
+                    customer = self.customerQueueFactory.get_from_queue()
+                    wait_time = int(time.time() - customer.get_timestamp())
+                    print "Total waiting time for the customer: " + str(wait_time) + " seconds"
+                    msg = Message('customer', customer)
                 else:
                     msg = Message('no_customer', "")
 

@@ -75,6 +75,8 @@ class CounterServerProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'success':
                 print message['payload']
                 #global_customer = None
+                process_time = int(time.time() - global_customer.get_timestamp())
+                print "Total processing time for the customer: " + str(process_time) + " seconds"
                 msg = Message('complete', "Thanks. You too :)")
 
             else:
@@ -121,7 +123,10 @@ class CounterClientProtocol(basic.LineReceiver):
                 has_customer = True
                 global_customer = Customer()
                 global_customer.object_decoder(message['payload'])
-                print " Next customer from the Queue "
+                global_customer.set_timestamp(time.time())
+
+
+
             elif message['msg_type'] == 'no_customer':
                 has_customer = False
 
