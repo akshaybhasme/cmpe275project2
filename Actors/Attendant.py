@@ -39,10 +39,9 @@ class Attendant:
         self.total -= cash
         reply = None
         if self.total > 0:
-            reply = "Thank you. Here's you change: $", abs(self.total), "Have a nice day. :)"
-            self.total = 0
-        elif self.total < 0:
             reply = "Sorry, but your short by:$ ", str(abs(self.total))
+        elif self.total < 0:
+            reply = "Thank you. Here's you change: $", str(abs(self.total)), "Have a nice day. :)"
         else:
             reply = "Thank you. Your payment is processed. Have a nice day. :)"
         return reply

@@ -1,5 +1,5 @@
 customer = dict(
-    MAX_ITEMS=10,
+    MAX_ITEMS=5,
     CARD_PROBABILITY=75,
     LEGAL_AGE=21,
     AGE_PROOF_PROBABILITY=80,

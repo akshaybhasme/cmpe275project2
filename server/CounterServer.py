@@ -63,7 +63,7 @@ class CounterServerProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'get_payment':
                 print message['payload']
                 if global_customer.hasDebitOrCreditCard:
-                    msg = Message('process_card', "Ok")
+                    msg = Message('process_card', "Ok, Let me swipe")
                 else:
                     msg = Message('process_cash', global_customer.cashOnHand)
 
