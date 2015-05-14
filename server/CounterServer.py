@@ -70,6 +70,8 @@ class CounterServerProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'insufficient_funds':
                 print message['payload']
                 #global_customer = None
+                process_time = int(time.time() - global_customer.get_timestamp())
+                print "Total processing time for the customer: " + str(process_time) + " seconds"
                 msg = Message('reject', "Oops! Sorry. I'll come back again")
 
             elif message['msg_type'] == 'success':

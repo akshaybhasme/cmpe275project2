@@ -79,7 +79,7 @@ class AttendantClientProtocol(LineReceiver):
                 cash = message['payload']
                 print("Here's $", str(cash), "for the bill")
                 payment = self.attendant.process_cash(cash)
-                success = self.attendant.get_total()
+                success = self.attendant.get_total_amount()
                 print "success ", success
                 if success <= 0:
                     msg = Message('success', payment)

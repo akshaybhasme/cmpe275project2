@@ -6,11 +6,11 @@ from Models import Item
 from Config import info
 
 
-MAX_ITEMS = info.customer['MAX_ITEMS']
-CARD_PROBABILITY = info.customer['CARD_PROBABILITY']
-LEGAL_AGE = info.customer['LEGAL_AGE']
-AGE_PROOF_PROBABILITY = info.customer['AGE_PROOF_PROBABILITY']
-MAX_CASH_IN_HAND = info.customer['MAX_CASH_IN_HAND']
+MAX_ITEMS=5
+CARD_PROBABILITY=75
+LEGAL_AGE=21
+AGE_PROOF_PROBABILITY=80
+MAX_CASH_IN_HAND=700
 
 
 class Customer:

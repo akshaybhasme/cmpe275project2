@@ -30,6 +30,9 @@ class Attendant:
         reply = "Your total today is: $", str(self.total)
         return reply
 
+    def get_total_amount(self):
+        return self.total
+
     def process_card(self):
         # need to check for failure and cash back
         reply = "Amount deducted from Card :$", str(self.total), " Thank you. Your payment is processed. Have a nice day. :)"

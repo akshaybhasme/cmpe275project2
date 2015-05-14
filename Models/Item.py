@@ -5,8 +5,8 @@ from random import randint
 from Config import info
 
 
-MAX_ITEM_VALUE = info.item['MAX_ITEM_VALUE']
-ITEM_ALCOHOL_PROBABILITY = info.item['ITEM_ALCOHOL_PROBABILITY']
+MAX_ITEM_VALUE=20
+ITEM_ALCOHOL_PROBABILITY=10
 
 
 class Item:
