@@ -44,11 +44,12 @@ class AttendantClientProtocol(LineReceiver):
                 msg = Message('next_customer', 'Next in line?')
 
             elif message['msg_type'] == 'process_items':
-                print message['payload']
                 items = []
                 for i in message['payload']:
+                    time.sleep(1)
                     item = Item()
                     item.decode_from_json(i)
+                    print item.get_name(),"\t", item.get_value(),"\t Alcolholic? ",item.is_alcoholic()
                     items.append(item)
                 alcoholic = self.attendant.process_item_list(items)
                 if alcoholic:
@@ -58,24 +59,25 @@ class AttendantClientProtocol(LineReceiver):
                     msg = Message('get_payment', result)
 
             elif message['msg_type'] == 'age_proof':
-                print message['payload']
                 age_proof = message['payload']
                 result = ''
                 if not age_proof:
+                    print "Sorry I don't have an Age-Proof document with me right now."
                     result += str(self.attendant.remove_alcoholic())
+                else:
+                    print "Here you go"
                 # need to display amount now
                 result += str(self.attendant.get_total())
                 msg = Message('get_payment', result)
 
             elif message['msg_type'] == 'process_card':
                 print message['payload']
-                has_card = message['payload']
                 result = self.attendant.process_card()
                 msg = Message('success', result)
 
             elif message['msg_type'] == 'process_cash':
-                print message['payload']
                 cash = message['payload']
+                print("Here's $", str(cash), "for the bill")
                 payment = self.attendant.process_cash(cash)
                 success = self.attendant.get_total()
                 if success == 0:

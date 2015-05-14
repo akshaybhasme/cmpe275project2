@@ -14,7 +14,7 @@ has_customer = False
 
 class CounterServerFactory(protocol.Factory):
     def __init__(self):
-        print "at server  factory"
+        #print "at server  factory"
         CounterServerProtocol().connectToOtherServer("")
         pass
 
@@ -63,7 +63,7 @@ class CounterServerProtocol(basic.LineReceiver):
             elif message['msg_type'] == 'get_payment':
                 print message['payload']
                 if global_customer.hasDebitOrCreditCard:
-                    msg = Message('process_card', True)
+                    msg = Message('process_card', "Ok")
                 else:
                     msg = Message('process_cash', global_customer.cashOnHand)
 
@@ -91,7 +91,7 @@ class CounterServerProtocol(basic.LineReceiver):
 
     def connectToOtherServer(self, line):
 
-        print "Connecting to queue server"
+        #print "Connecting to queue server"
         host = server.queue['ip']
         port = server.queue['port']
         #factory = CounterClientFactory()
@@ -103,15 +103,15 @@ class CounterServerProtocol(basic.LineReceiver):
 class CounterClientProtocol(basic.LineReceiver):
 
     def connectionMade(self):
-        print("Connection made with the Queue Server")
+        #print("Connection made with the Queue Server")
         self.sendLine("{\"msg_type\":\"nextcustomer\"}")
 
     def nextCustomer(self):
         self.sendLine("{\"msg_type\":\"nextcustomer\"}")
-        print("Fetch Customer from queue")
+        #print("Fetch Customer from queue")
 
     def dataReceived(self, data):
-        print " Next customer received from Queue Server: " + data
+
         global global_customer
         global has_customer
         try:
@@ -121,7 +121,7 @@ class CounterClientProtocol(basic.LineReceiver):
                 has_customer = True
                 global_customer = Customer()
                 global_customer.object_decoder(message['payload'])
-
+                print " Next customer from the Queue "
             elif message['msg_type'] == 'no_customer':
                 has_customer = False
 
@@ -150,7 +150,6 @@ def main(port):
     import sys
     from twisted.python import log
 
-    log.startLogging(sys.stdout)
     factory = CounterServerFactory()
     factory.protocol = CounterServerProtocol
     reactor.listenTCP(port, factory)
